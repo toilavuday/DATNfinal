@@ -1,0 +1,361 @@
+{
+  "members": [
+    {
+      "id": "69ca8434334c1ca183f4db66",
+      "name": "Lâm Xuân Vũ",
+      "role": "ADMIN",
+      "email": "Lamxuanvu20082004@gmail.com",
+      "image": "https://res.cloudinary.com/duo05icyi/image/upload/v1774879794/cms/1774879790983-e0c1f5e3-328b-4f36-ba25-cebab7b218c7.png",
+      "displayName": "Quản lý_Lâm Xuân Vũ"
+    },
+    {
+      "id": "69ec8076ce03c795403d0528",
+      "name": "Lâm Xuân Trường",
+      "role": "STAFF",
+      "email": "Lamxuanvu3102004@gmail.com",
+      "image": "https://res.cloudinary.com/duo05icyi/image/upload/v1777107060/cms/1777107059618-35b12563-21fa-4a34-935d-16c30fdb179d.png",
+      "displayName": "Nhân viên_Lâm Xuân Trường"
+    },
+    {
+      "id": "69f1fd0213742866a002b974",
+      "name": "abc",
+      "role": "STAFF",
+      "email": "Lamxuanvu2008200499@gmail.com",
+      "image": "https://res.cloudinary.com/duo05icyi/image/upload/v1777466624/cms/1777466623015-bffe20eb-abcd-4ad4-93f9-1ed359580f55.png",
+      "displayName": "Nhân viên_abc"
+    },
+    {
+      "id": "69fcb5104b44f1f1678956fb",
+      "name": "a",
+      "role": "STAFF",
+      "email": "Lamxuanvu20082004999@gmail.com",
+      "image": "https://res.cloudinary.com/duo05icyi/image/upload/v1778169104/cms/1778169101420-81e38cc1-db18-436a-b703-4d59c0a91b43.png",
+      "displayName": "Nhân viên_a"
+    }
+  ],
+  "messages": [
+    {
+      "id": "system-1778169105263-logjms1",
+      "kind": "system",
+      "conversationId": "community",
+      "authorName": "Hệ thống",
+      "content": "Nhân viên_a đã được thêm vào Cộng đồng.",
+      "createdAt": "2026-05-07T15:51:45.263Z"
+    },
+    {
+      "id": "msg-1778170049460-in6vbx3",
+      "kind": "user",
+      "conversationId": "community",
+      "memberId": "69ca8434334c1ca183f4db66",
+      "authorName": "Quản lý_Lâm Xuân Vũ",
+      "content": "hi",
+      "createdAt": "2026-05-07T16:07:29.460Z"
+    },
+    {
+      "id": "schedule-1778170064170-adhwk0y",
+      "kind": "schedule",
+      "conversationId": "community",
+      "memberId": "69ca8434334c1ca183f4db66",
+      "authorName": "Quản lý_Lâm Xuân Vũ",
+      "content": "Đã gửi lịch làm việc theo tuần cho Tất cả nhân viên.",
+      "createdAt": "2026-05-07T16:07:44.170Z",
+      "schedule": {
+        "period": "week",
+        "periodValue": "2026-W19",
+        "targetMemberId": "all",
+        "targetName": "Tất cả nhân viên",
+        "shiftOptions": [
+          "Ca sáng",
+          "Ca chiều",
+          "Ca tối"
+        ],
+        "note": "",
+        "choices": []
+      }
+    },
+    {
+      "id": "msg-1778170075402-tm4y87w",
+      "kind": "user",
+      "conversationId": "direct-69ca8434334c1ca183f4db66--69fcb5104b44f1f1678956fb",
+      "memberId": "69ca8434334c1ca183f4db66",
+      "authorName": "Quản lý_Lâm Xuân Vũ",
+      "content": "hi",
+      "createdAt": "2026-05-07T16:07:55.402Z"
+    },
+    {
+      "id": "msg-1778170083817-r7boz6n",
+      "kind": "user",
+      "conversationId": "direct-69ca8434334c1ca183f4db66--69f1fd0213742866a002b974",
+      "memberId": "69ca8434334c1ca183f4db66",
+      "authorName": "Quản lý_Lâm Xuân Vũ",
+      "content": "hi",
+      "createdAt": "2026-05-07T16:08:03.817Z"
+    },
+    {
+      "id": "msg-1778170091588-xdgyf8k",
+      "kind": "user",
+      "conversationId": "direct-69ca8434334c1ca183f4db66--69ec8076ce03c795403d0528",
+      "memberId": "69ca8434334c1ca183f4db66",
+      "authorName": "Quản lý_Lâm Xuân Vũ",
+      "content": "hi",
+      "createdAt": "2026-05-07T16:08:11.588Z"
+    },
+    {
+      "id": "msg-1778170131201-yw4a8u0",
+      "kind": "user",
+      "conversationId": "direct-69ec8076ce03c795403d0528--69fcb5104b44f1f1678956fb",
+      "memberId": "69fcb5104b44f1f1678956fb",
+      "authorName": "Nhân viên_a",
+      "content": "hi",
+      "createdAt": "2026-05-07T16:08:51.201Z"
+    },
+    {
+      "id": "msg-1778170197066-1dpb0ne",
+      "kind": "user",
+      "conversationId": "direct-69ca8434334c1ca183f4db66--69fcb5104b44f1f1678956fb",
+      "memberId": "69fcb5104b44f1f1678956fb",
+      "authorName": "Nhân viên_a",
+      "content": "hi",
+      "createdAt": "2026-05-07T16:09:57.066Z"
+    },
+    {
+      "id": "schedule-1778648165095-6ioqxyv",
+      "kind": "schedule",
+      "conversationId": "community",
+      "memberId": "69ca8434334c1ca183f4db66",
+      "authorName": "Quản lý_Lâm Xuân Vũ",
+      "content": "Đã gửi lịch làm việc theo ngày cho Tất cả nhân viên.",
+      "createdAt": "2026-05-13T04:56:05.095Z",
+      "schedule": {
+        "period": "day",
+        "periodValue": "2026-05-16",
+        "targetMemberId": "all",
+        "targetName": "Tất cả nhân viên",
+        "shiftOptions": [
+          "Ca sáng",
+          "Ca chiều",
+          "Ca tối"
+        ],
+        "note": "",
+        "choices": [
+          {
+            "memberId": "69f1fd0213742866a002b974",
+            "memberName": "Nhân viên_abc",
+            "shift": "Ca chiều",
+            "chosenAt": "2026-05-13T04:56:09.042Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "schedule-1778648218167-ijjtlje",
+      "kind": "schedule",
+      "conversationId": "community",
+      "memberId": "69ca8434334c1ca183f4db66",
+      "authorName": "Quản lý_Lâm Xuân Vũ",
+      "content": "Đã gửi lịch làm việc theo tuần cho Tất cả nhân viên.",
+      "createdAt": "2026-05-13T04:56:58.167Z",
+      "schedule": {
+        "period": "week",
+        "periodValue": "2026-W21",
+        "targetMemberId": "all",
+        "targetName": "Tất cả nhân viên",
+        "shiftOptions": [
+          "Ca sáng",
+          "Ca chiều",
+          "Ca tối"
+        ],
+        "note": "",
+        "choices": [
+          {
+            "memberId": "69f1fd0213742866a002b974",
+            "memberName": "Nhân viên_abc",
+            "shift": "Ca sáng",
+            "chosenAt": "2026-05-13T04:57:01.513Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "schedule-1778648472533-7r9irqe",
+      "kind": "schedule",
+      "conversationId": "community",
+      "memberId": "69ca8434334c1ca183f4db66",
+      "authorName": "Quản lý_Lâm Xuân Vũ",
+      "content": "Đã gửi lịch làm việc theo tuần cho Tất cả nhân viên.",
+      "createdAt": "2026-05-13T05:01:12.533Z",
+      "schedule": {
+        "period": "week",
+        "periodValue": "2026-W22",
+        "targetMemberId": "all",
+        "targetName": "Tất cả nhân viên",
+        "shiftOptions": [
+          "Ca sáng",
+          "Ca chiều",
+          "Ca tối"
+        ],
+        "note": "",
+        "choices": [
+          {
+            "memberId": "69ca8434334c1ca183f4db66",
+            "memberName": "Quản lý_Lâm Xuân Vũ",
+            "shift": "Ca sáng",
+            "chosenAt": "2026-05-13T05:01:17.809Z"
+          },
+          {
+            "memberId": "69f1fd0213742866a002b974",
+            "memberName": "Nhân viên_abc",
+            "shift": "Ca chiều",
+            "chosenAt": "2026-05-13T05:03:08.557Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "schedule-1778648852315-mwg9vc0",
+      "kind": "schedule",
+      "conversationId": "community",
+      "memberId": "69ca8434334c1ca183f4db66",
+      "authorName": "Quản lý_Lâm Xuân Vũ",
+      "content": "Đã gửi lịch làm việc theo tuần cho Tất cả nhân viên.",
+      "createdAt": "2026-05-13T05:07:32.315Z",
+      "schedule": {
+        "period": "week",
+        "periodValue": "2026-W20",
+        "targetMemberId": "all",
+        "targetName": "Tất cả nhân viên",
+        "shiftOptions": [
+          "Ca 1",
+          "Ca 2",
+          "Ca 3"
+        ],
+        "note": "",
+        "choices": [
+          {
+            "memberId": "69ca8434334c1ca183f4db66",
+            "memberName": "Quản lý_Lâm Xuân Vũ",
+            "shift": "Ca 1",
+            "chosenAt": "2026-05-13T05:08:07.543Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "schedule-1778649084123-ow17jp5",
+      "kind": "schedule",
+      "conversationId": "community",
+      "memberId": "69ca8434334c1ca183f4db66",
+      "authorName": "Quản lý_Lâm Xuân Vũ",
+      "content": "Đã gửi lịch làm việc theo ngày cho Tất cả nhân viên.",
+      "createdAt": "2026-05-13T05:11:24.123Z",
+      "schedule": {
+        "period": "day",
+        "periodValue": "2026-05-20",
+        "targetMemberId": "all",
+        "targetName": "Tất cả nhân viên",
+        "shiftOptions": [
+          "Ca 1",
+          "Ca 2",
+          "Ca 3"
+        ],
+        "note": "",
+        "choices": [
+          {
+            "memberId": "69ca8434334c1ca183f4db66",
+            "memberName": "Quản lý_Lâm Xuân Vũ",
+            "shift": "Ca 1",
+            "chosenAt": "2026-05-13T05:11:27.351Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "schedule-1778649099990-4bn7v6c",
+      "kind": "schedule",
+      "conversationId": "community",
+      "memberId": "69ca8434334c1ca183f4db66",
+      "authorName": "Quản lý_Lâm Xuân Vũ",
+      "content": "Đã gửi lịch làm việc theo tuần cho Tất cả nhân viên.",
+      "createdAt": "2026-05-13T05:11:39.990Z",
+      "schedule": {
+        "period": "week",
+        "periodValue": "2026-W22",
+        "targetMemberId": "all",
+        "targetName": "Tất cả nhân viên",
+        "shiftOptions": [
+          "Ca 1",
+          "Ca 2",
+          "Ca 3"
+        ],
+        "note": "",
+        "choices": [
+          {
+            "memberId": "69ca8434334c1ca183f4db66",
+            "memberName": "Quản lý_Lâm Xuân Vũ",
+            "shift": "Ca 2",
+            "chosenAt": "2026-05-13T05:11:44.101Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "schedule-1778649231723-gx7e4ev",
+      "kind": "schedule",
+      "conversationId": "community",
+      "memberId": "69ca8434334c1ca183f4db66",
+      "authorName": "Quản lý_Lâm Xuân Vũ",
+      "content": "Đã gửi lịch làm việc theo tuần cho Tất cả nhân viên.",
+      "createdAt": "2026-05-13T05:13:51.723Z",
+      "schedule": {
+        "period": "week",
+        "periodValue": "2026-W22",
+        "targetMemberId": "all",
+        "targetName": "Tất cả nhân viên",
+        "shiftOptions": [
+          "Ca 1",
+          "Ca 2",
+          "Ca 3"
+        ],
+        "note": "",
+        "choices": [
+          {
+            "memberId": "69f1fd0213742866a002b974",
+            "memberName": "Nhân viên_abc",
+            "shift": "Ca 3",
+            "chosenAt": "2026-05-13T05:16:43.010Z"
+          },
+          {
+            "memberId": "69ca8434334c1ca183f4db66",
+            "memberName": "Quản lý_Lâm Xuân Vũ",
+            "shift": "Ca 2",
+            "chosenAt": "2026-05-13T05:31:38.466Z"
+          },
+          {
+            "memberId": "69fcb5104b44f1f1678956fb",
+            "memberName": "Nhân viên_a",
+            "shift": "Ca 2",
+            "chosenAt": "2026-05-13T05:38:02.887Z"
+          }
+        ]
+      }
+    }
+  ],
+  "readState": {
+    "69ca8434334c1ca183f4db66": {
+      "community": "2026-05-13T14:39:11.880Z",
+      "direct-69ca8434334c1ca183f4db66--69fcb5104b44f1f1678956fb": "2026-05-07T16:10:04.508Z",
+      "direct-69ca8434334c1ca183f4db66--69ec8076ce03c795403d0528": "2026-05-07T16:10:08.701Z",
+      "direct-69ca8434334c1ca183f4db66--69f1fd0213742866a002b974": "2026-05-07T16:10:09.803Z"
+    },
+    "69fcb5104b44f1f1678956fb": {
+      "community": "2026-05-13T05:38:05.017Z",
+      "direct-69ca8434334c1ca183f4db66--69fcb5104b44f1f1678956fb": "2026-05-07T16:14:43.442Z",
+      "direct-69f1fd0213742866a002b974--69fcb5104b44f1f1678956fb": "2026-05-07T16:09:43.873Z",
+      "direct-69ec8076ce03c795403d0528--69fcb5104b44f1f1678956fb": "2026-05-07T16:09:33.440Z"
+    },
+    "69f1fd0213742866a002b974": {
+      "community": "2026-05-13T05:22:38.168Z",
+      "direct-69ca8434334c1ca183f4db66--69f1fd0213742866a002b974": "2026-05-13T04:55:16.568Z"
+    }
+  }
+}

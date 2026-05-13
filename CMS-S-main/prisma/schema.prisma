@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String     @id @default(auto()) @map("_id") @db.ObjectId
+  email              String     @unique
+  password           String
+  name               String
+  role               UserRole   @default(STAFF)
+  image              String?
+  bankCode           Int?
+  bank               String?
+  isLocked           Boolean    @default(false)
+  lastLogin          DateTime?
+  orders             Order[]
+  activities         Activity[]
+  incomeRecord       IncomeRecord[] 
+  hourlyRate         Float    @default(50000)
+  monthlyIncome      Int?     @default(0)
+  schedules          Schedule[]
+  stockEntryBatches  StockEntryBatch[]
+
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  resetToken       String?  
+  resetTokenExpiry DateTime?
+
+  @@index([resetToken])
+
+}
+
+enum UserRole {
+  STAFF
+  ADMIN
+  USER
+}
+
+model IncomeRecord {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  month     String   
+  totalIncome    Int  
+  createdAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Profit {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  month            String
+  year             Int
+  revenue          Float
+  stockVariation   Float
+  totalSalary      Float
+  profit           Float
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([year, month])
+}
+
+model Schedule {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String   @db.ObjectId
+  date        DateTime 
+  shifts      String[]  
+  hoursWorked Int      
+  status      String   
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Product {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  price       Float
+  category    String   @default("Cà phê")
+  brand       String
+  recipe      Json?
+  image       String
+  quantity    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+model StockEntryBatch {
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt  DateTime     @default(now()) // Thời gian nhập/xuất hàng
+  entries    StockEntry[] // Danh sách nguyên liệu trong lần nhập/xuất này
+  userId     String?      @db.ObjectId
+  user       User?        @relation(fields: [userId], references: [id])
+}
+
+model StockEntry {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  batchId         String   @db.ObjectId
+  batch           StockEntryBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  supplierName    String?  // Họ và tên nhà cung cấp
+  category        String   // Loại sản phẩm
+  productDetail   String   // Chi tiết sản phẩm
+  quantity        Float    // Số lượng
+  unit            String   // Định lượng (đơn vị tính)
+  price           Float?   // Đơn giá (VND / unit)
+  priceDifference Float?   // Chênh lệch giá xuất so với giá trung bình tại thời điểm xuất
+  type            String   @default("IMPORT") // "IMPORT" hoặc "EXPORT" hoặc "CONSUME"
+  
+  expiryDate      DateTime?
+  createdAt       DateTime @default(now()) 
+}
+
+
+
+model Order {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  status      OrderStatus
+  amount      Float?
+  user        User        @relation(fields: [userId], references: [id])
+  userId      String      @db.ObjectId
+  items       Json
+  customerName String? // Added customerName
+  paymentMethod String    @default("cash")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+enum OrderStatus {
+  success
+  pending
+}
+
+model Activity {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String   @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+model SystemSetting {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  key   String  @unique
+  value Boolean @default(true)
+}

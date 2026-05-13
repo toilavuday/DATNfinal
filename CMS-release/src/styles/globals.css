@@ -1,0 +1,263 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+.dark {
+  --background: #111111;
+  --foreground: #ededed;
+}
+
+body {
+  @apply bg-white text-black;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  transition: filter 0.3s ease, background-color 0.3s ease;
+}
+
+/* Smart Dark Mode: Invert lightness but preserve hues */
+body.dark {
+  filter: invert(0.92) hue-rotate(180deg);
+  background-color: #ffffff; /* We set to white so invert(0.92) turns it into a nice dark gray */
+}
+
+/* Un-invert media elements so images/logos look normal */
+body.dark img, 
+body.dark video, 
+body.dark .ant-image-img {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Optional: hide shadows in dark mode to prevent glowing effects */
+body.dark * {
+  box-shadow: none !important;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+/* styles.css */
+.custom-table .ant-table-thead > tr > th {
+  background-color: #4b983b;
+  color: white;
+  text-align: center;
+}
+
+.modern-sidebar-menu.ant-menu {
+  min-height: 100%;
+  border-inline-end: none !important;
+  background: transparent !important;
+  color: #334155;
+}
+
+.modern-sidebar-menu.ant-menu-inline .ant-menu-submenu-title,
+.modern-sidebar-menu.ant-menu-inline .ant-menu-item {
+  width: calc(100% - 8px);
+  margin-inline: 4px;
+  margin-block: 6px;
+  border-radius: 18px;
+  transition: all 0.25s ease;
+}
+
+.modern-sidebar-menu.ant-menu-inline .ant-menu-submenu-title {
+  height: 48px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.modern-sidebar-menu.ant-menu-inline .ant-menu-item {
+  height: 44px;
+  padding-inline-start: 16px !important;
+  font-weight: 600;
+  color: #475569;
+}
+
+.modern-sidebar-menu.ant-menu-inline .ant-menu-submenu-title:hover,
+.modern-sidebar-menu.ant-menu-inline .ant-menu-item:hover {
+  background: rgba(226, 238, 255, 0.9) !important;
+  color: #0f172a !important;
+}
+
+.modern-sidebar-menu.ant-menu-inline .ant-menu-item-selected {
+  background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 16px 35px -24px rgba(29, 78, 216, 0.75);
+}
+
+.modern-sidebar-menu.ant-menu-inline .ant-menu-item-selected::after {
+  display: none;
+}
+
+.modern-sidebar-menu.ant-menu-inline .ant-menu-item-selected a,
+.modern-sidebar-menu.ant-menu-inline .ant-menu-item-selected .ant-menu-title-content,
+.modern-sidebar-menu.ant-menu-inline .ant-menu-item-selected .anticon {
+  color: #ffffff !important;
+}
+
+.modern-sidebar-menu.ant-menu-inline .ant-menu-sub.ant-menu-inline {
+  background: transparent !important;
+}
+
+.modern-sidebar-menu.ant-menu-inline-collapsed .ant-menu-item,
+.modern-sidebar-menu.ant-menu-inline-collapsed .ant-menu-submenu-title {
+  width: calc(100% - 12px);
+  margin-inline: 6px;
+  padding-inline: 0 !important;
+}
+
+.modern-sidebar-menu.ant-menu-inline-collapsed .ant-menu-item .anticon,
+.modern-sidebar-menu.ant-menu-inline-collapsed
+  .ant-menu-submenu-title
+  .anticon {
+  font-size: 18px;
+}
+
+.modern-product-table .ant-table,
+.modern-salary-table .ant-table {
+  background: transparent;
+}
+
+.modern-product-table .ant-table-container,
+.modern-salary-table .ant-table-container {
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+}
+
+.modern-product-table .ant-table-thead > tr > th,
+.modern-salary-table .ant-table-thead > tr > th {
+  background: #f8fafc;
+  color: #0f172a;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 700;
+}
+
+.modern-product-table .ant-table-tbody > tr > td,
+.modern-salary-table .ant-table-tbody > tr > td {
+  background: #ffffff;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.modern-product-table .ant-table-tbody > tr.ant-table-row:hover > td,
+.modern-salary-table .ant-table-tbody > tr.ant-table-row:hover > td {
+  background: #f0f9ff !important;
+}
+
+.modern-product-table .ant-pagination,
+.modern-salary-table .ant-pagination {
+  margin: 18px 0 4px;
+}
+
+.modern-product-table .ant-pagination .ant-pagination-item,
+.modern-salary-table .ant-pagination .ant-pagination-item {
+  border-radius: 9999px;
+}
+
+.modern-product-table .ant-pagination .ant-pagination-item-active,
+.modern-salary-table .ant-pagination .ant-pagination-item-active {
+  border-color: #0ea5e9;
+}
+
+.modern-product-table .ant-pagination .ant-pagination-item-active a,
+.modern-salary-table .ant-pagination .ant-pagination-item-active a {
+  color: #0284c7;
+}
+
+.modern-inventory-table .ant-table {
+  background: transparent;
+}
+
+.modern-inventory-table .ant-table-container {
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+}
+
+.modern-inventory-table .ant-table-thead > tr > th {
+  background: #f8fafc;
+  color: #0f172a;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 700;
+}
+
+.modern-inventory-table .ant-table-tbody > tr > td {
+  background: #ffffff;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.modern-inventory-table .ant-table-tbody > tr.ant-table-row:hover > td {
+  background: #f0f9ff !important;
+}
+
+.ant-layout-sider {
+  transition: width 0.1s ease-in-out;
+}
+
+.notification-popover .ant-popover-inner {
+  padding: 0 !important;
+}
+
+.notification-popover .ant-popover-inner-content {
+  padding: 0 !important;
+}
+
+.notification-popover .ant-popover-content {
+  width: 100%;
+}
+
+.notification-scrollable {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.8) transparent;
+}
+
+.notification-scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.notification-scrollable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notification-scrollable::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background-color: rgba(100, 116, 139, 0.75);
+}
+
+@media (max-width: 767px) {
+  .work-schedule-calendar .ant-picker-panel {
+    overflow-x: auto;
+  }
+
+  .work-schedule-calendar .ant-picker-content th {
+    padding-block: 8px;
+    font-size: 12px;
+  }
+
+  .work-schedule-calendar .ant-picker-calendar-mini .ant-picker-panel {
+    border-radius: 16px;
+  }
+
+  .work-schedule-calendar .ant-picker-cell .ant-picker-calendar-date,
+  .work-schedule-calendar .ant-picker-cell .ant-picker-calendar-date-content {
+    min-height: 78px;
+    padding: 4px;
+  }
+
+  .work-schedule-calendar .ant-picker-calendar-date-value {
+    font-size: 12px;
+  }
+}
