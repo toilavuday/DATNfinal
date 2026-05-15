@@ -31,6 +31,14 @@
       "email": "Lamxuanvu20082004999@gmail.com",
       "image": "https://res.cloudinary.com/duo05icyi/image/upload/v1778169104/cms/1778169101420-81e38cc1-db18-436a-b703-4d59c0a91b43.png",
       "displayName": "Nhân viên_a"
+    },
+    {
+      "id": "6a054a8dbfc787ed44be8e74",
+      "name": "Lam Anh",
+      "role": "STAFF",
+      "email": "Lamxuantruong117@gmail.com",
+      "image": "https://res.cloudinary.com/duo05icyi/image/upload/v1778731659/cms/1778731652987-c5107a1e-435f-4e2d-8b53-c4bc0e9e9759.png",
+      "displayName": "Nhân viên_Lam Anh"
     }
   ],
   "messages": [
@@ -338,14 +346,52 @@
           }
         ]
       }
+    },
+    {
+      "id": "system-1778731661455-3wrvczd",
+      "kind": "system",
+      "conversationId": "community",
+      "authorName": "Hệ thống",
+      "content": "Nhân viên_Lam Anh đã được thêm vào Cộng đồng.",
+      "createdAt": "2026-05-14T04:07:41.455Z"
+    },
+    {
+      "id": "schedule-1778752179732-ifdkx3q",
+      "kind": "schedule",
+      "conversationId": "community",
+      "memberId": "69ca8434334c1ca183f4db66",
+      "authorName": "Quản lý_Lâm Xuân Vũ",
+      "content": "Đã gửi lịch làm việc theo tuần cho Tất cả nhân viên.",
+      "createdAt": "2026-05-14T09:49:39.732Z",
+      "schedule": {
+        "period": "week",
+        "periodValue": "2026-W20",
+        "targetMemberId": "all",
+        "targetName": "Tất cả nhân viên",
+        "shiftOptions": [
+          "Ca 1",
+          "Ca 2",
+          "Ca 3"
+        ],
+        "note": "",
+        "choices": [
+          {
+            "memberId": "69ca8434334c1ca183f4db66",
+            "memberName": "Quản lý_Lâm Xuân Vũ",
+            "shift": "Ca 2",
+            "chosenAt": "2026-05-14T09:49:42.930Z"
+          }
+        ]
+      }
     }
   ],
   "readState": {
     "69ca8434334c1ca183f4db66": {
-      "community": "2026-05-13T14:39:11.880Z",
-      "direct-69ca8434334c1ca183f4db66--69fcb5104b44f1f1678956fb": "2026-05-07T16:10:04.508Z",
+      "community": "2026-05-15T00:19:51.818Z",
+      "direct-69ca8434334c1ca183f4db66--69fcb5104b44f1f1678956fb": "2026-05-14T14:12:25.588Z",
       "direct-69ca8434334c1ca183f4db66--69ec8076ce03c795403d0528": "2026-05-07T16:10:08.701Z",
-      "direct-69ca8434334c1ca183f4db66--69f1fd0213742866a002b974": "2026-05-07T16:10:09.803Z"
+      "direct-69ca8434334c1ca183f4db66--69f1fd0213742866a002b974": "2026-05-14T09:49:27.106Z",
+      "direct-69ca8434334c1ca183f4db66--6a054a8dbfc787ed44be8e74": "2026-05-14T09:49:27.936Z"
     },
     "69fcb5104b44f1f1678956fb": {
       "community": "2026-05-13T05:38:05.017Z",

@@ -391,7 +391,7 @@ const OrderHistory: React.FC = () => {
               Mã HĐ: {selectedOrder.id}<br/>
               Khách hàng: {selectedOrder.customerName || "Khách vãng lai"}<br/>
               Bàn/Kênh: {(() => {
-                let tableDisplay = selectedOrder.table || "Mang đi";
+                const tableDisplay = selectedOrder.table || "Mang đi";
                 const partnerCode = selectedOrder.partnerCode || "";
                 const channelLabel = selectedOrder.channelLabel || "";
                 const identity = `${partnerCode} ${channelLabel}`.toUpperCase();

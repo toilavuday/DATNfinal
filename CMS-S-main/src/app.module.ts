@@ -28,6 +28,7 @@ import { SystemSettingModule } from './modules/system-setting/system-setting.mod
 import { StockModule } from './modules/stock/stock.module';
 import { StockService } from './modules/stock/stock.service';
 import { ProfitModule } from './modules/profit/profit.module';
+import { SalaryModule } from './modules/salary/salary.module';
 @Module({
   imports: [
     UserModule,
@@ -42,6 +43,7 @@ import { ProfitModule } from './modules/profit/profit.module';
     SystemSettingModule,
     StockModule,
     ProfitModule,
+    SalaryModule,
   ],
   controllers: [
     AppController,

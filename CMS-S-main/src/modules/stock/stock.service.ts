@@ -11,6 +11,29 @@ export class StockService {
       .join('::');
   }
 
+  private normalizeText(value?: string | null) {
+    return (value || '')
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\u0111/g, 'd');
+  }
+
+  private normalizeUnit(value?: string | null) {
+    const unit = this.normalizeText(value);
+    if (unit === 'pcs' || unit === 'piece' || unit === 'pieces' || unit === 'cai') {
+      return 'cai';
+    }
+
+    return unit;
+  }
+
+  private isGenericUnit(value?: string | null) {
+    const unit = this.normalizeUnit(value);
+    return !unit || unit === 'don vi' || unit === 'unit' || unit === 'units';
+  }
+
   private getStockRiskStatus(daysRemaining: number | null) {
     if (daysRemaining === null) return 'unknown';
     if (daysRemaining < 5) return 'critical';
@@ -109,11 +132,36 @@ export class StockService {
     inventory: Array<{ category: string; productDetail: string; unit: string; quantity: number; expiryDetails?: Array<{ expiryDate: string | null; quantity: number }> }>,
     entry: { category: string; productDetail: string; unit: string },
   ) {
-    return inventory.find((i) =>
-      i.category?.trim().toLowerCase() === entry.category?.trim().toLowerCase() &&
-      i.productDetail?.trim().toLowerCase() === entry.productDetail?.trim().toLowerCase() &&
-      i.unit?.trim().toLowerCase() === entry.unit?.trim().toLowerCase()
+    const normalizedCategory = this.normalizeText(entry.category);
+    const normalizedProductDetail = this.normalizeText(entry.productDetail);
+    const normalizedUnit = this.normalizeUnit(entry.unit);
+
+    const sameProduct = (i: { category: string; productDetail: string }) =>
+      this.normalizeText(i.category) === normalizedCategory &&
+      this.normalizeText(i.productDetail) === normalizedProductDetail;
+
+    // 1. Tìm khớp chính xác cả tên và đơn vị
+    const exactMatch = inventory.find(
+      (i) => sameProduct(i) && this.normalizeUnit(i.unit) === normalizedUnit,
     );
+    if (exactMatch) {
+      return exactMatch;
+    }
+
+    // 2. Nếu không khớp đơn vị, hãy tìm tất cả các mục khớp tên nguyên liệu
+    const productMatches = inventory.filter(sameProduct);
+    
+    // Nếu chỉ có duy nhất 1 loại đơn vị cho nguyên liệu này trong kho, tự động chọn nó
+    if (productMatches.length === 1) {
+      return productMatches[0];
+    }
+
+    // 3. Nếu là đơn vị chung (generic), ưu tiên lấy mục đầu tiên tìm thấy
+    if (this.isGenericUnit(entry.unit)) {
+      return productMatches.length > 0 ? productMatches[0] : undefined;
+    }
+
+    return undefined;
   }
 
   private splitByExpiryLots(
@@ -384,17 +432,23 @@ export class StockService {
 
       const inventoryItem = this.findInventoryMatch(inventory, entry);
       const currentStock = inventoryItem?.quantity || 0;
+      const resolvedUnit = inventoryItem?.unit || entry.unit?.trim();
 
       if (quantityNumber > currentStock) {
-        throw new BadRequestException(`Không đủ tồn kho để tiêu thụ ${entry.productDetail}. Hiện chỉ còn ${currentStock} ${entry.unit}.`);
+        throw new BadRequestException(`Không đủ tồn kho để tiêu thụ ${entry.productDetail}. Hiện chỉ còn ${currentStock} ${resolvedUnit}.`);
       }
 
-      const averagePrice = await this.getEffectiveAveragePrice(entry.category, entry.productDetail, entry.unit, inventory);
+      const averagePrice = await this.getEffectiveAveragePrice(
+        entry.category,
+        entry.productDetail,
+        resolvedUnit,
+        inventory,
+      );
       return this.splitByExpiryLots(inventoryItem!, quantityNumber).map((lot) => ({
         category: entry.category?.trim(),
         productDetail: entry.productDetail?.trim(),
         quantity: lot.quantity,
-        unit: entry.unit?.trim(),
+        unit: resolvedUnit,
         price: averagePrice,
         priceDifference: 0,
         expiryDate: lot.expiryDate,
@@ -473,14 +527,10 @@ export class StockService {
       const totalValue = activeLots.reduce((sum, lot) => sum + lot.totalValue, 0);
       const expiredQuantity = expiredLots.reduce((sum, lot) => sum + lot.quantity, 0);
 
-      const buildDetails = (lots: typeof activeLots) =>
-        this.sortLotsForExport(lots).map((lot) => ({
-          expiryDate: lot.expiryDate ? lot.expiryDate.toISOString() : null,
-          quantity: Number(lot.quantity.toFixed(2)),
-          unit: item.unit,
-          averagePrice:
-            lot.quantity > 0 ? Math.max(0, Math.round(lot.totalValue / lot.quantity)) : 0,
-          totalValue: Math.max(0, Math.round(lot.totalValue)),
+      const buildDetails = (lots: any[]) =>
+        lots.map((l) => ({
+          expiryDate: l.expiryDate ? l.expiryDate.toISOString() : null,
+          quantity: Number(l.quantity.toFixed(2)),
         }));
 
       return {
@@ -488,12 +538,11 @@ export class StockService {
         productDetail: item.productDetail,
         unit: item.unit,
         quantity: Number(quantity.toFixed(2)),
+        totalValue: Math.max(0, Math.round(totalValue)),
         expiredQuantity: Number(expiredQuantity.toFixed(2)),
         averagePrice: quantity > 0 ? Math.max(0, Math.round(totalValue / quantity)) : 0,
-        totalValue: Math.max(0, Math.round(totalValue)),
         expiryDetails: buildDetails(activeLots),
-        expiredDetails: buildDetails(expiredLots),
-        lastStockOutAt: quantity <= 0 ? item.lastStockOutAt || new Date() : undefined,
+        expiredLotsDetails: buildDetails(expiredLots),
       };
     });
   }

@@ -39,7 +39,11 @@ const ForgotPasswordPage: React.FC = () => {
         router.replace("/reset-password");
       }
     } catch (error: any) {
-      setErrorMessage(error.message || "Đã xảy ra lỗi không xác định.");
+      setErrorMessage(
+        error.response?.data?.message ||
+          error.message ||
+          "Đã xảy ra lỗi không xác định."
+      );
     }
   };
 

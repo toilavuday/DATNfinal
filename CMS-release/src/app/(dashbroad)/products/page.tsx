@@ -130,8 +130,8 @@ const ProductManagement: React.FC = () => {
 
       const invItem = inventoryReport.find(
         (i: any) =>
-          i.category?.trim().toLowerCase() === ing.category.trim().toLowerCase() &&
-          i.productDetail?.trim().toLowerCase() === ing.productDetail.trim().toLowerCase()
+          i.category?.trim().toLowerCase() === ing.category?.trim().toLowerCase() &&
+          i.productDetail?.trim().toLowerCase() === ing.productDetail?.trim().toLowerCase()
       );
       const invQty = invItem ? Number(invItem.quantity) : 0;
 
@@ -405,7 +405,10 @@ const ProductManagement: React.FC = () => {
         <div className="flex items-center justify-center gap-2">
           <button
             type="button"
-            onClick={() => setSelectedProduct(record)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedProduct(record);
+            }}
             className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 transition hover:bg-sky-100 hover:text-sky-700"
             aria-label={`Xem sản phẩm ${record.name}`}
           >
@@ -413,7 +416,10 @@ const ProductManagement: React.FC = () => {
           </button>
           <button
             type="button"
-            onClick={() => openEditModal(record)}
+            onClick={(e) => {
+              e.stopPropagation();
+              openEditModal(record);
+            }}
             className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 text-amber-700 transition hover:bg-amber-100"
             aria-label={`Chỉnh sửa sản phẩm ${record.name}`}
           >
@@ -421,7 +427,10 @@ const ProductManagement: React.FC = () => {
           </button>
           <button
             type="button"
-            onClick={() => handleDelete(record)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(record);
+            }}
             className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-50 text-rose-700 transition hover:bg-rose-100"
             aria-label={`Xóa sản phẩm ${record.name}`}
           >
@@ -692,6 +701,25 @@ const ProductManagement: React.FC = () => {
                             </p>
                           </div>
                         </div>
+
+                        {/* Thành phần định lượng */}
+                        {activeProduct.recipe && Array.isArray(activeProduct.recipe) && activeProduct.recipe.length > 0 && (
+                          <div className="mt-4 rounded-2xl border border-sky-100 bg-sky-50/30 p-4">
+                            <p className="mb-3 text-xs font-bold uppercase tracking-widest text-sky-700">
+                              Định lượng nguyên liệu
+                            </p>
+                            <div className="space-y-2">
+                              {activeProduct.recipe.map((ing: any, idx: number) => (
+                                <div key={idx} className="flex items-center justify-between text-sm">
+                                  <span className="text-slate-600">{ing.productDetail}</span>
+                                  <span className="font-semibold text-slate-900">
+                                    {ing.amount} {ing.unit}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       <div className="mt-6 flex gap-3">
@@ -910,10 +938,7 @@ const ProductManagement: React.FC = () => {
                                 const cat = e.target.value;
                                 newRecipe[index].category = cat;
                                 newRecipe[index].productDetail = ""; // reset when category changes
-                                
-                                if (cat === "Sữa" || cat === "Syrup" || cat === "Nước") newRecipe[index].unit = "ml/l";
-                                else if (cat === "Cà phê" || cat === "Trái cây" || cat === "Hoa quả" || cat === "Đường") newRecipe[index].unit = "kg/g";
-                                else newRecipe[index].unit = "đơn vị";
+                                newRecipe[index].unit = ""; 
                                 
                                 setFormData(prev => ({ ...prev, recipe: newRecipe }));
                               }}
@@ -930,7 +955,16 @@ const ProductManagement: React.FC = () => {
                               value={item.productDetail || ""}
                               onChange={(e) => {
                                 const newRecipe = [...formData.recipe];
-                                newRecipe[index].productDetail = e.target.value;
+                                const detail = e.target.value;
+                                newRecipe[index].productDetail = detail;
+                                
+                                const inv = inventoryReport.find(
+                                  (i) => i.category === item.category && i.productDetail === detail
+                                );
+                                if (inv) {
+                                  newRecipe[index].unit = inv.unit;
+                                }
+                                
                                 setFormData(prev => ({ ...prev, recipe: newRecipe }));
                               }}
                               required
@@ -944,20 +978,25 @@ const ProductManagement: React.FC = () => {
                               ))}
                             </select>
                             
-                            <input 
-                              type="number" 
-                              min="0" 
-                              step="any" 
-                              placeholder="Định lượng" 
-                              className={inputClassName + " sm:w-32"}
-                              value={item.amount || ""}
-                              onChange={e => {
-                                const newRecipe = [...formData.recipe];
-                                newRecipe[index].amount = Number(e.target.value);
-                                setFormData(prev => ({ ...prev, recipe: newRecipe }));
-                              }}
-                              required
-                            />
+                            <div className="relative flex items-center">
+                              <input 
+                                type="number" 
+                                min="0" 
+                                step="any" 
+                                placeholder="Định lượng" 
+                                className={inputClassName + " sm:w-36 pr-12"}
+                                value={item.amount || ""}
+                                onChange={e => {
+                                  const newRecipe = [...formData.recipe];
+                                  newRecipe[index].amount = Number(e.target.value);
+                                  setFormData(prev => ({ ...prev, recipe: newRecipe }));
+                                }}
+                                required
+                              />
+                              <span className="absolute right-3 text-xs font-medium text-slate-400">
+                                {item.unit || ""}
+                              </span>
+                            </div>
                             
                             <button
                               type="button"
@@ -975,7 +1014,7 @@ const ProductManagement: React.FC = () => {
                         
                         {formData.recipe.length === 0 && (
                           <div className="rounded-xl border border-dashed border-sky-200 bg-sky-50/50 py-6 text-center text-sm text-sky-600/70">
-                            Chưa có nguyên liệu nào. Nhấn "Thêm nguyên liệu" để cấu hình.
+                            Chưa có nguyên liệu nào. Nhấn &quot;Thêm nguyên liệu&quot; để cấu hình.
                           </div>
                         )}
                         

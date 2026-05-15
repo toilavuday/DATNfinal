@@ -12,6 +12,7 @@ import {
   message,
   Switch,
   Grid,
+  Popconfirm,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import localeData from "dayjs/plugin/localeData";
@@ -202,15 +203,22 @@ const WorkScheduleCalendar = () => {
                   >
                     Sửa
                   </Button>
-                  <Button
-                    type="link"
-                    danger
-                    size="small"
-                    onClick={() => handleDeleteSchedule(schedule.id)}
-                    className="px-1"
+                  <Popconfirm
+                    title="Xóa lịch làm việc"
+                    description="Bạn có chắc chắn muốn xóa lịch làm việc này không?"
+                    onConfirm={() => handleDeleteSchedule(schedule.id)}
+                    okText="Có"
+                    cancelText="Không"
                   >
-                    Xóa
-                  </Button>
+                    <Button
+                      type="link"
+                      danger
+                      size="small"
+                      className="px-1"
+                    >
+                      Xóa
+                    </Button>
+                  </Popconfirm>
                 </div>
               )}
             </div>

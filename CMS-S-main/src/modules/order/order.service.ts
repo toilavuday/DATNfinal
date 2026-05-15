@@ -39,7 +39,12 @@ export class OrderService {
   ) { }
 
   private normalizeValue(value?: string | null) {
-    return value?.trim().toLowerCase() || '';
+    return (value || '')
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\u0111/g, 'd');
   }
 
   private findInventoryItem(
@@ -455,7 +460,10 @@ export class OrderService {
           for (const ingredient of (product as any).recipe as any[]) {
             if (!ingredient.category || !ingredient.productDetail) continue;
             
-            const key = `${ingredient.category}-${ingredient.productDetail}-${ingredient.unit}`;
+            const catKey = this.normalizeValue(ingredient.category);
+            const prodKey = this.normalizeValue(ingredient.productDetail);
+            const untKey = this.normalizeValue(ingredient.unit);
+            const key = `${catKey}-${prodKey}-${untKey}`;
             const requiredAmount = Number(ingredient.amount) * item.quantity;
             
             if (!requiredIngredientsMap[key]) {
@@ -486,11 +494,7 @@ export class OrderService {
     // ============================================
     const exportEntries = Object.values(requiredIngredientsMap);
     if (exportEntries.length > 0) {
-      try {
-        await this.stockService.consumeStock(userId, exportEntries);
-      } catch (error) {
-        console.error('Lỗi khi lưu nguyên liệu tiêu thụ:', error);
-      }
+      await this.stockService.consumeStock(userId, exportEntries);
     }
 
     const order = await this.prisma.order.create({

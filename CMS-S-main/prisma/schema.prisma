@@ -24,6 +24,7 @@ model User {
   monthlyIncome      Int?     @default(0)
   schedules          Schedule[]
   stockEntryBatches  StockEntryBatch[]
+  salaries           Salary[]
 
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
@@ -151,4 +152,20 @@ model SystemSetting {
   id    String  @id @default(auto()) @map("_id") @db.ObjectId
   key   String  @unique
   value Boolean @default(true)
+}
+
+model Salary {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  month       Int
+  year        Int
+  totalHours  Float
+  hourlyRate  Float
+  totalSalary Float
+  status      String   @default("PENDING") // PENDING, PAID
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, month, year])
 }

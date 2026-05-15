@@ -190,16 +190,21 @@ export class AuthService {
         <p class="token">${resetToken}</p>
         <p>Vui lòng đăng nhập vào website để đổi mật khẩu</p>
         <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.</p>
-        <p>Thanks,<br> Kiều Đình Đàn</p>
+        <p>Thanks,<br> Lâm Xuân Vũ</p>
         <div class="footer">
-          <p>© 2025 Kiều Đình Đàn</p>
+          <p>© 2026 Lâm Xuân Vũ</p>
         </div>
       </div>
     </body>
     </html>
   `;
 
-    this.mailService.sendMail(email, 'Reset Password', resetToken, htmlContent);
+    await this.mailService.sendMail(
+      email,
+      'Reset Password',
+      resetToken,
+      htmlContent,
+    );
 
     return {
       message: 'Mật khẩu đã được gửi tới email của bạn',

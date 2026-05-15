@@ -399,6 +399,11 @@ export default function StockManagement() {
       return;
     }
 
+    if (formattedEntries.some((entry) => Number(entry.quantity) < 0 || (entry.price && Number(entry.price) < 0))) {
+      message.error("Số lượng và đơn giá không được là số âm.");
+      return;
+    }
+
     if (actionType === "IMPORT" && formattedEntries.some((entry) => !entry.expiryDate)) {
       message.error("Vui lòng nhập ngày hết hạn cho từng nguyên liệu.");
       return;
@@ -991,6 +996,7 @@ export default function StockManagement() {
                     <div className={`grid grid-cols-1 gap-3 ${actionType === "IMPORT" ? "md:grid-cols-5" : "md:grid-cols-3"}`}>
                       <Input
                         type="number"
+                        min={0}
                         placeholder="Số lượng"
                         value={entry.quantity}
                         onChange={(e) => handleEntryChange(index, "quantity", e.target.value)}
@@ -1006,6 +1012,7 @@ export default function StockManagement() {
                       />
                       <Input
                         type="number"
+                        min={0}
                         placeholder="Đơn giá (VNĐ)"
                         value={entry.price}
                         onChange={(e) => handleEntryChange(index, "price", e.target.value)}

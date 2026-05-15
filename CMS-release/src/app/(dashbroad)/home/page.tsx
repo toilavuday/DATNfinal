@@ -155,7 +155,7 @@ const Page = () => {
         selectedMonth === "all"
           ? batchDate.getFullYear() === selectedYear
           : batchDate.getMonth() + 1 === selectedMonth &&
-            batchDate.getFullYear() === selectedYear;
+          batchDate.getFullYear() === selectedYear;
       const isUserMatch =
         selectedEmployee === "all" ||
         batch.userId === selectedEmployee ||
@@ -190,12 +190,12 @@ const Page = () => {
         stockCost: number;
       };
     }> = {};
-    
+
     filteredBatches.forEach(batch => {
       batch.entries.forEach(e => {
         const productDetail = e.productDetail || e.ingredient || "";
         const category = e.category || "Khác";
-        
+
         if (!categoryMap[category]) {
           categoryMap[category] = {
             category,
@@ -211,7 +211,7 @@ const Page = () => {
             }
           };
         }
-        
+
         const invItem = inventoryReport.find((i: any) => i.category === category && i.productDetail === productDetail && i.unit === e.unit);
         const avgPrice = Number(invItem?.averagePrice) || Number(e.price) || 0;
         const qty = Number(e.quantity) || 0;
@@ -251,7 +251,6 @@ const Page = () => {
           categoryMap[category].totals.consumeQty += qty;
           categoryMap[category].totals.consumeCost += avgPrice * qty;
         } else {
-          // Old batches lacking type -> Default IMPORT
           item.importQty += qty;
           item.importCost += price * qty;
           categoryMap[category].totals.importQty += qty;
@@ -259,9 +258,6 @@ const Page = () => {
         }
 
         item.avgPrice = avgPrice;
-        
-        // SỬA LỖI TỒN KHO ÂM: Lấy số lượng tồn kho thực tế từ Backend (inventoryReport) thay vì tự trừ
-        // Nếu chọn tất cả các tháng, có thể dùng công thức cũ, nếu chọn theo tháng, phải dùng tồn kho hiện tại
         const remainingQty = invItem?.quantity ?? (item.importQty - item.exportQty - item.consumeQty);
         item.stockCost = remainingQty * item.avgPrice;
       });
@@ -271,7 +267,6 @@ const Page = () => {
       catData.totals.stockCost = catData.items.reduce((sum, item) => sum + item.stockCost, 0);
     });
 
-    // Create flat array with category headers and totals
     const result: Array<{
       productDetail: string;
       unit: string;
@@ -282,13 +277,13 @@ const Page = () => {
       exportCost: number;
       consumeCost: number;
       stockCost: number;
+      startingQty?: number;
       isCategoryHeader?: boolean;
       isTotal?: boolean;
       category?: string;
     }> = [];
 
     Object.values(categoryMap).forEach(catData => {
-      // Add category header
       result.push({
         productDetail: `📁 ${catData.category}`,
         unit: "",
@@ -303,12 +298,10 @@ const Page = () => {
         category: catData.category,
       });
 
-      // Add items
       catData.items.forEach(item => {
         result.push(item);
       });
 
-      // Add total for category
       result.push({
         productDetail: `Tổng ${catData.category}`,
         unit: "",
@@ -329,25 +322,25 @@ const Page = () => {
 
   const handleExportExcel = () => {
     const headers = ["Danh mục", "Nguyên liệu", "Đơn vị", "Nhập Kho", "Tiền Nhập", "Xuất Kho", "Tiền Xuất", "Đã Bán", "Tiền Bán", "Tồn Kho", "Tiền Tồn"];
-    
+
     const rows = [];
     let currentCategory = "";
-    
+
     for (const item of ingredientSummaryData) {
       if (item.isCategoryHeader) {
         currentCategory = item.category || item.productDetail.replace("📁 ", "");
         continue;
       }
-      
+
       if (item.isTotal) {
         rows.push([
           "TỔNG CỘNG", "", "", "", "", "", "", "", "", "", item.stockCost || 0
         ]);
         continue;
       }
-      
+
       const resultQty = Number(item.importQty || 0) - Number(item.exportQty || 0) - Number(item.consumeQty || 0);
-      
+
       rows.push([
         currentCategory,
         item.productDetail,
@@ -362,12 +355,12 @@ const Page = () => {
         item.stockCost || 0
       ]);
     }
-    
+
     const csvContent = "\uFEFF" + [
       headers.join(","),
       ...rows.map(row => row.map(cell => `"${cell}"`).join(","))
     ].join("\n");
-    
+
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -387,7 +380,7 @@ const Page = () => {
   ) => {
     const filteredOrders = orderList.filter((order) => {
       const orderDate = new Date(order.createdAt);
-      
+
       let isTimeMatch = false;
       if (month === "all") {
         isTimeMatch = orderDate.getFullYear() === year;
@@ -414,7 +407,7 @@ const Page = () => {
         if (!productSales[item.productName]) {
           productSales[item.productName] = { quantity: 0, revenue: 0 };
         }
-        
+
         productSales[item.productName].quantity += item.quantity;
         productSales[item.productName].revenue += revenue;
         totalProductsSold += item.quantity;
@@ -422,8 +415,8 @@ const Page = () => {
     });
 
     const sortedProducts = Object.entries(productSales)
-      .map(([productName, data]) => ({ 
-        productName, 
+      .map(([productName, data]) => ({
+        productName,
         quantity: data.quantity,
         revenue: data.revenue
       }))
@@ -482,7 +475,7 @@ const Page = () => {
       profit: number;
     }> = [];
     const daysInMonth = new Date(year, month, 0).getDate();
-    
+
     // Define weeks: 1-7, 8-14, 15-21, 22-28, 29-end
     const weekRanges = [
       { start: 1, end: 7, label: 'Tuần 1' },
@@ -490,7 +483,7 @@ const Page = () => {
       { start: 15, end: 21, label: 'Tuần 3' },
       { start: 22, end: 28, label: 'Tuần 4' },
     ];
-    
+
     // Add week 5 if month has more than 28 days
     if (daysInMonth > 28) {
       weekRanges.push({ start: 29, end: daysInMonth, label: 'Tuần 5' });
@@ -537,18 +530,11 @@ const Page = () => {
           (employeeId === "all" || batch.userId === employeeId || batch.user?.id === employeeId)
         );
       });
-      const totalImportCost = weekBatches.reduce((acc, batch) => {
+      const totalUsageCost = weekBatches.reduce((acc, batch) => {
         return acc + batch.entries.reduce((entryAcc, e) => {
-          if (e.type === "IMPORT") {
-            return entryAcc + (Number(e.price) || 0) * Number(e.quantity);
-          }
-          return entryAcc;
-        }, 0);
-      }, 0);
+          const type = (e.type || "").toUpperCase();
+          if (type !== "EXPORT" && type !== "CONSUME") return entryAcc;
 
-      const totalExportCost = weekBatches.reduce((acc, batch) => {
-        return acc + batch.entries.reduce((entryAcc, e) => {
-          if (e.type !== "EXPORT") return entryAcc;
           const invItem = inventoryReport.find((i: any) => i.category === e.category && i.productDetail === e.productDetail && i.unit === e.unit);
           const avgPrice = invItem?.averagePrice || 0;
           const price = Number(e.price) || avgPrice;
@@ -556,7 +542,7 @@ const Page = () => {
         }, 0);
       }, 0);
 
-      const stockCost = totalImportCost - totalExportCost;
+      const stockCost = totalUsageCost;
       const profit = revenue - stockCost - totalSalary;
 
       weeks.push({
@@ -602,18 +588,11 @@ const Page = () => {
         (employeeId === "all" || batch.userId === employeeId || batch.user?.id === employeeId)
       );
     });
-    const totalImportCost = monthBatches.reduce((acc, batch) => {
+    const totalUsageCost = monthBatches.reduce((acc, batch) => {
       return acc + batch.entries.reduce((entryAcc, e) => {
-        if (e.type === "IMPORT") {
-          return entryAcc + (Number(e.price) || 0) * Number(e.quantity);
-        }
-        return entryAcc;
-      }, 0);
-    }, 0);
+        const type = (e.type || "").toUpperCase();
+        if (type !== "EXPORT" && type !== "CONSUME") return entryAcc;
 
-    const totalExportCost = monthBatches.reduce((acc, batch) => {
-      return acc + batch.entries.reduce((entryAcc, e) => {
-        if (e.type !== "EXPORT") return entryAcc;
         const invItem = inventoryReport.find((i: any) => i.category === e.category && i.productDetail === e.productDetail && i.unit === e.unit);
         const avgPrice = invItem?.averagePrice || 0;
         const price = Number(e.price) || avgPrice;
@@ -621,7 +600,7 @@ const Page = () => {
       }, 0);
     }, 0);
 
-    const stockCost = totalImportCost - totalExportCost;
+    const stockCost = totalUsageCost;
     const profit = revenue - stockCost - totalSalary;
 
     return { revenue, totalOrders, stockCost, totalSalary, profit };
@@ -1016,252 +995,274 @@ const Page = () => {
                   <div className="flex flex-col max-h-[400px] overflow-hidden">
                     <div className="flex-1 overflow-auto">
                       <Table
-                    columns={[
-                      {
-                        title: "Nguyên liệu",
-                        dataIndex: "productDetail",
-                        key: "productDetail",
-                        className: "font-medium text-slate-800",
-                        render: (text, record) => {
-                          if (record.isCategoryHeader) {
-                            return <span className="font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded">{text}</span>;
-                          }
-                          if (record.isTotal) {
-                            return <span className="font-semibold text-slate-700 bg-slate-100 px-2 py-1 rounded">{text}</span>;
-                          }
-                          return text;
-                        }
-                      },
-                      {
-                        title: "Đơn vị",
-                        dataIndex: "unit",
-                        key: "unit",
-                        align: "center" as const,
-                        render: (text, record) => {
-                          if (record.isCategoryHeader || record.isTotal) return "";
-                          return text;
-                        }
-                      },
-                      {
-                        title: "Nhập Kho",
-                        key: "import",
-                        align: "right" as const,
-                        render: (_, r) => {
-                          if (r.isCategoryHeader) return "";
-                          return <div><div className="text-emerald-600 font-semibold">{r.importQty} {r.unit}</div><div className="text-[11px] text-slate-500">{formatCurrency(r.importCost)}</div></div>;
-                        }
-                      },
-                      {
-                        title: "Xuất Kho",
-                        key: "export",
-                        align: "right" as const,
-                        render: (_, r) => {
-                          if (r.isCategoryHeader) return "";
-                          return <div><div className="text-rose-500 font-semibold">{r.exportQty} {r.unit}</div><div className="text-[11px] text-slate-500">{formatCurrency(r.exportCost)}</div></div>;
-                        }
-                      },
-                      {
-                        title: "Đã Bán (PBH)",
-                        key: "consume",
-                        align: "right" as const,
-                        render: (_, r) => {
-                          if (r.isCategoryHeader) return "";
-                          return <div><div className="text-amber-600 font-semibold">{r.consumeQty} {r.unit}</div><div className="text-[11px] text-slate-500">{formatCurrency(r.consumeCost)}</div></div>;
-                        }
-                      },
-                      {
-                        title: "Chi phí tồn kho",
-                        key: "totalQty",
-                        align: "right" as const,
-                        render: (_, r) => {
-                          if (r.isCategoryHeader) return "";
-                          if (r.isTotal) {
-                            return <div className="font-bold text-sky-700">{formatCurrency(r.stockCost)}</div>;
-                          }
-                          const resultQty = Number(r.importQty || 0) - Number(r.exportQty || 0) - Number(r.consumeQty || 0);
-                          const resultCost = Number(r.stockCost || 0);
-                          return <div><span className={`font-semibold ${resultQty < 0 ? "text-rose-600" : "text-sky-600"}`}>{resultQty} {r.unit}</span><div className="text-[11px] font-medium text-slate-500">{formatCurrency(resultCost)}</div></div>;
-                        }
-                      },
-                    ]}
-                    dataSource={ingredientSummaryData}
-                    rowKey={(r, index) => `${r.productDetail}-${r.unit}-${index}`}
-                    pagination={false}
-                    size="small"
-                    bordered
-                    className="modern-inventory-table rounded-2xl overflow-hidden"
-                  />
+                        columns={[
+                          {
+                            title: "Nguyên liệu",
+                            dataIndex: "productDetail",
+                            key: "productDetail",
+                            className: "font-medium text-slate-800",
+                            render: (text, record) => {
+                              if (record.isCategoryHeader) {
+                                return <span className="font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded">{text}</span>;
+                              }
+                              if (record.isTotal) {
+                                return <span className="font-semibold text-slate-700 bg-slate-100 px-2 py-1 rounded">{text}</span>;
+                              }
+                              return text;
+                            }
+                          },
+                          {
+                            title: "Đơn vị",
+                            dataIndex: "unit",
+                            key: "unit",
+                            align: "center" as const,
+                            render: (text, record) => {
+                              if (record.isCategoryHeader || record.isTotal) return "";
+                              return text;
+                            }
+                          },
+                          {
+                            title: "Tồn Đầu Kỳ",
+                            key: "starting",
+                            align: "right" as const,
+                            render: (_, r) => {
+                              if (r.isCategoryHeader || r.isTotal) return "";
+                              return <div className="text-slate-500 font-medium">{Number(r.startingQty || 0)} {r.unit}</div>;
+                            }
+                          },
+                          {
+                            title: "Nhập Kho",
+                            key: "import",
+                            align: "right" as const,
+                            render: (_, r) => {
+                              if (r.isCategoryHeader) return "";
+                              return <div><div className="text-emerald-600 font-semibold">{r.importQty} {r.unit}</div><div className="text-[11px] text-slate-500">{formatCurrency(r.importCost)}</div></div>;
+                            }
+                          },
+                          {
+                            title: "Xuất Kho",
+                            key: "export",
+                            align: "right" as const,
+                            render: (_, r) => {
+                              if (r.isCategoryHeader) return "";
+                              return <div><div className="text-rose-500 font-semibold">{r.exportQty} {r.unit}</div><div className="text-[11px] text-slate-500">{formatCurrency(r.exportCost)}</div></div>;
+                            }
+                          },
+                          {
+                            title: "Đã Bán (PBH)",
+                            key: "consume",
+                            align: "right" as const,
+                            render: (_, r) => {
+                              if (r.isCategoryHeader) return "";
+                              return <div><div className="text-amber-600 font-semibold">{r.consumeQty} {r.unit}</div><div className="text-[11px] text-slate-500">{formatCurrency(r.consumeCost)}</div></div>;
+                            }
+                          },
+                          {
+                            title: "Chi phí tồn kho",
+                            key: "totalQty",
+                            align: "right" as const,
+                            render: (_, r) => {
+                              if (r.isCategoryHeader) return "";
+                              if (r.isTotal) {
+                                return <div className="font-bold text-sky-700">{formatCurrency(r.stockCost)}</div>;
+                              }
+                              const resultQty = Number(r.importQty || 0) - Number(r.exportQty || 0) - Number(r.consumeQty || 0);
+                              const resultCost = Number(r.stockCost || 0);
+                              return <div><span className={`font-semibold ${resultQty < 0 ? "text-rose-600" : "text-sky-600"}`}>{resultQty} {r.unit}</span><div className="text-[11px] font-medium text-slate-500">{formatCurrency(resultCost)}</div></div>;
+                            }
+                          },
+                        ]}
+                        dataSource={ingredientSummaryData}
+                        rowKey={(r, index) => `${r.productDetail}-${r.unit}-${index}`}
+                        pagination={false}
+                        size="small"
+                        bordered
+                        className="modern-inventory-table rounded-2xl overflow-hidden"
+                      />
                     </div>
-                  <div className="mt-4 flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 border border-slate-200">
-                     <span className="text-sm font-semibold text-slate-700">Tổng chi phí tồn kho tất cả danh mục (tổng nhập - tổng xuất)</span>
-                     <span className="text-base font-bold text-sky-700">
-                        {formatCurrency(ingredientSummaryData.filter(item => item.isTotal).reduce((acc, r) => acc + (r.stockCost || 0), 0))}
-                     </span>
+                    <div className="mt-4 flex flex-col gap-3 rounded-2xl bg-slate-50 p-5 border border-slate-200 shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="h-2 w-2 rounded-full bg-amber-500"></div>
+                          <span className="text-sm font-semibold text-slate-700">Tổng chi phí nguyên liệu (Đồng bộ biểu đồ: Tổng xuất + Tổng bán)</span>
+                        </div>
+                        <span className="text-lg font-bold text-amber-600">
+                          {formatCurrency(ingredientSummaryData.filter(item => item.isTotal).reduce((acc, r) => acc + (Number(r.exportCost || 0) + Number(r.consumeCost || 0)), 0))}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-200">
+                        <div className="flex items-center gap-2">
+                          <div className="h-2 w-2 rounded-full bg-sky-500"></div>
+                          <span className="text-sm font-semibold text-slate-700">Giá trị tồn kho hiện tại (Tồn kho * Đơn giá bình quân)</span>
+                        </div>
+                        <span className="text-lg font-bold text-sky-700">
+                          {formatCurrency(ingredientSummaryData.filter(item => item.isTotal).reduce((acc, r) => acc + (r.stockCost || 0), 0))}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
                 ) : (
-                  <div className="rounded-[28px] border border-dashed border-slate-200 bg-slate-50 px-6 py-12 text-center">
-                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-white text-slate-400 shadow-sm">
-                      <Warehouse className="h-8 w-8" />
+                    <div className="rounded-[28px] border border-dashed border-slate-200 bg-slate-50 px-6 py-12 text-center">
+                      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-white text-slate-400 shadow-sm">
+                        <Warehouse className="h-8 w-8" />
+                      </div>
+                      <h3 className="mt-4 text-lg font-semibold text-slate-900">
+                        Không có báo cáo xuất nhập
+                      </h3>
+                      <p className="mt-2 text-sm leading-6 text-slate-500">
+                        Chưa có dữ liệu nguyên liệu trong thời gian được chọn.
+                      </p>
                     </div>
-                    <h3 className="mt-4 text-lg font-semibold text-slate-900">
-                      Không có báo cáo xuất nhập
-                    </h3>
-                    <p className="mt-2 text-sm leading-6 text-slate-500">
-                      Chưa có dữ liệu nguyên liệu trong thời gian được chọn.
+                )}
+                  </div>
+            </div>
+              <div className="rounded-[32px] border border-white/70 bg-white/90 p-5 shadow-[0_24px_80px_-45px_rgba(15,23,42,0.55)] backdrop-blur sm:p-6 xl:col-span-2">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold text-slate-900">
+                      Biểu đồ lợi nhuận và chi phí
+                    </h2>
+                    <p className="mt-1 text-sm text-slate-500">
+                      {selectedMonth === "all"
+                        ? `So sánh dữ liệu theo từng tháng trong năm ${selectedYear}.`
+                        : `So sánh dữ liệu theo từng ${viewType === "week" ? "tuần" : "ngày"} trong ${monthLabel}.`}
                     </p>
                   </div>
-                )}
-              </div>
-            </div>
-          </div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {/* Chọn tháng */}
+                    <select
+                      value={selectedMonth}
+                      onChange={(e) => setSelectedMonth(e.target.value === "all" ? "all" : Number(e.target.value))}
+                      className="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 outline-none hover:bg-slate-200 cursor-pointer"
+                    >
+                      <option value="all">Tất cả các tháng</option>
+                      {Array.from({ length: 12 }, (_, i) => (
+                        <option key={i + 1} value={i + 1}>Tháng {i + 1}</option>
+                      ))}
+                    </select>
 
-          <div className="rounded-[32px] border border-white/70 bg-white/90 p-5 shadow-[0_24px_80px_-45px_rgba(15,23,42,0.55)] backdrop-blur sm:p-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 className="text-xl font-semibold text-slate-900">
-                  Biểu đồ lợi nhuận và chi phí
-                </h2>
-                <p className="mt-1 text-sm text-slate-500">
-                  {selectedMonth === "all"
-                    ? `So sánh dữ liệu theo từng tháng trong năm ${selectedYear}.`
-                    : `So sánh dữ liệu theo từng ${viewType === "week" ? "tuần" : "ngày"} trong ${monthLabel}.`}
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center gap-3">
-                {/* Chọn tháng */}
-                <select
-                  value={selectedMonth}
-                  onChange={(e) => setSelectedMonth(e.target.value === "all" ? "all" : Number(e.target.value))}
-                  className="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 outline-none hover:bg-slate-200 cursor-pointer"
-                >
-                  <option value="all">Tất cả các tháng</option>
-                  {Array.from({ length: 12 }, (_, i) => (
-                    <option key={i + 1} value={i + 1}>Tháng {i + 1}</option>
-                  ))}
-                </select>
+                    {/* Chọn danh mục */}
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 outline-none hover:bg-slate-200 cursor-pointer"
+                    >
+                      <option value="all">Tất cả danh mục</option>
+                      <option value="revenue">Doanh thu</option>
+                      <option value="profit">Lợi nhuận</option>
+                      <option value="totalSalary">Lương nhân viên</option>
+                      <option value="stockCost">Chi phí nguyên liệu</option>
+                    </select>
 
-                {/* Chọn danh mục */}
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 outline-none hover:bg-slate-200 cursor-pointer"
-                >
-                  <option value="all">Tất cả danh mục</option>
-                  <option value="revenue">Doanh thu</option>
-                  <option value="profit">Lợi nhuận</option>
-                  <option value="totalSalary">Lương nhân viên</option>
-                  <option value="stockCost">Chi phí nguyên liệu</option>
-                </select>
+                    {/* Chọn xem theo Tuần/Ngày */}
+                    {selectedMonth !== "all" && (
+                      <select
+                        value={viewType}
+                        onChange={(e) => setViewType(e.target.value as "week" | "day")}
+                        className="rounded-full bg-sky-100 px-4 py-2 text-sm font-medium text-sky-700 outline-none hover:bg-sky-200 cursor-pointer"
+                      >
+                        <option value="week">Xem theo tuần</option>
+                        <option value="day">Xem theo ngày</option>
+                      </select>
+                    )}
 
-                {/* Chọn xem theo Tuần/Ngày */}
-                {selectedMonth !== "all" && (
-                  <select
-                    value={viewType}
-                    onChange={(e) => setViewType(e.target.value as "week" | "day")}
-                    className="rounded-full bg-sky-100 px-4 py-2 text-sm font-medium text-sky-700 outline-none hover:bg-sky-200 cursor-pointer"
-                  >
-                    <option value="week">Xem theo tuần</option>
-                    <option value="day">Xem theo ngày</option>
-                  </select>
+                    <div className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
+                      {formatCurrency(currentRevenue)}
+                    </div>
+                  </div>
+                </div>
+                {forecastError && (
+                  <p className="mt-3 text-sm font-medium text-rose-600">
+                    {forecastError}
+                  </p>
                 )}
 
-                <div className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
-                  {formatCurrency(currentRevenue)}
+                <div className="mt-6 h-[420px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart
+                      data={selectedChartData}
+                      margin={{ top: 20, right: 20, left: 0, bottom: 10 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                      <XAxis
+                        dataKey={selectedMonth === "all" ? "month" : (selectedChartData[0]?.day ? "day" : (selectedChartData[0]?.week ? "week" : "label"))}
+                        tickLine={false}
+                        axisLine={false}
+                        fontSize={11}
+                      />
+                      <YAxis
+                        tickFormatter={formatYAxisTick}
+                        tickLine={false}
+                        axisLine={false}
+                        width={80}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          borderRadius: 18,
+                          border: "1px solid #e2e8f0",
+                          boxShadow: "0 18px 40px -24px rgba(15,23,42,0.35)",
+                          fontSize: "13px",
+                        }}
+                        formatter={(value, name) => {
+                          if (name === 'revenue') return [formatCurrency(value as number), 'Doanh thu'];
+                          if (name === 'stockCost') return [formatCurrency(value as number), 'Chi phí nguyên liệu'];
+                          if (name === 'totalSalary') return [formatCurrency(value as number), 'Lương nhân viên'];
+                          if (name === 'profit') return [formatCurrency(value as number), 'Lợi nhuận'];
+                          return [value, name];
+                        }}
+                        labelFormatter={(label, payload) => {
+                          if (payload && payload[0] && payload[0].payload.isPrediction) {
+                            return `${label} (Dự báo ARIMA)`;
+                          }
+                          return label;
+                        }}
+                      />
+                      <Legend wrapperStyle={{ paddingTop: '20px' }} />
+
+                      {(selectedCategory === "all" || selectedCategory === "revenue") && (
+                        <Bar dataKey="revenue" fill="#3b82f6" name="Doanh thu" barSize={viewType === "day" ? 12 : 32}>
+                          {selectedChartData.map((entry, index) => (
+                            <Cell key={`cell-rev-${index}`} fill={entry.isPrediction ? '#93c5fd' : '#3b82f6'} fillOpacity={entry.isPrediction ? 0.6 : 1} />
+                          ))}
+                        </Bar>
+                      )}
+
+                      {(selectedCategory === "all" || selectedCategory === "stockCost") && (
+                        <Bar dataKey="stockCost" fill="#f59e0b" name="Chi phí nguyên liệu" barSize={viewType === "day" ? 12 : 32}>
+                          {selectedChartData.map((entry, index) => (
+                            <Cell key={`cell-stock-${index}`} fill={entry.isPrediction ? '#fcd34d' : '#f59e0b'} fillOpacity={entry.isPrediction ? 0.6 : 1} />
+                          ))}
+                        </Bar>
+                      )}
+
+                      {(selectedCategory === "all" || selectedCategory === "totalSalary") && (
+                        <Bar dataKey="totalSalary" fill="#ef4444" name="Lương nhân viên" barSize={viewType === "day" ? 12 : 32}>
+                          {selectedChartData.map((entry, index) => (
+                            <Cell key={`cell-salary-${index}`} fill={entry.isPrediction ? '#fca5a5' : '#ef4444'} fillOpacity={entry.isPrediction ? 0.6 : 1} />
+                          ))}
+                        </Bar>
+                      )}
+
+                      {(selectedCategory === "all" || selectedCategory === "profit") && (
+                        <Line
+                          type="monotone"
+                          dataKey="profit"
+                          stroke="#10b981"
+                          strokeWidth={3}
+                          name="Lợi nhuận"
+                          dot={viewType === "day" ? false : { r: 4, strokeWidth: 2 }}
+                          activeDot={{ r: 6 }}
+                        />
+                      )}
+                    </ComposedChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             </div>
-            {forecastError && (
-              <p className="mt-3 text-sm font-medium text-rose-600">
-                {forecastError}
-              </p>
-            )}
-
-            <div className="mt-6 h-[420px]">
-              <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart
-                    data={selectedChartData}
-                    margin={{ top: 20, right: 20, left: 0, bottom: 10 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                    <XAxis 
-                      dataKey={selectedMonth === "all" ? "month" : (selectedChartData[0]?.day ? "day" : (selectedChartData[0]?.week ? "week" : "label"))} 
-                      tickLine={false} 
-                      axisLine={false} 
-                      fontSize={11}
-                    />
-                    <YAxis
-                      tickFormatter={formatYAxisTick}
-                      tickLine={false}
-                      axisLine={false}
-                      width={80}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        borderRadius: 18,
-                        border: "1px solid #e2e8f0",
-                        boxShadow: "0 18px 40px -24px rgba(15,23,42,0.35)",
-                        fontSize: "13px",
-                      }}
-                      formatter={(value, name) => {
-                        if (name === 'revenue') return [formatCurrency(value as number), 'Doanh thu'];
-                        if (name === 'stockCost') return [formatCurrency(value as number), 'Chi phí nguyên liệu'];
-                        if (name === 'totalSalary') return [formatCurrency(value as number), 'Lương nhân viên'];
-                        if (name === 'profit') return [formatCurrency(value as number), 'Lợi nhuận'];
-                        return [value, name];
-                      }}
-                      labelFormatter={(label, payload) => {
-                        if (payload && payload[0] && payload[0].payload.isPrediction) {
-                          return `${label} (Dự báo ARIMA)`;
-                        }
-                        return label;
-                      }}
-                    />
-                    <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                    
-                    {(selectedCategory === "all" || selectedCategory === "revenue") && (
-                      <Bar dataKey="revenue" fill="#3b82f6" name="Doanh thu" barSize={viewType === "day" ? 12 : 32}>
-                        {selectedChartData.map((entry, index) => (
-                          <Cell key={`cell-rev-${index}`} fill={entry.isPrediction ? '#93c5fd' : '#3b82f6'} fillOpacity={entry.isPrediction ? 0.6 : 1} />
-                        ))}
-                      </Bar>
-                    )}
-                    
-                    {(selectedCategory === "all" || selectedCategory === "stockCost") && (
-                      <Bar dataKey="stockCost" fill="#f59e0b" name="Chi phí nguyên liệu" barSize={viewType === "day" ? 12 : 32}>
-                        {selectedChartData.map((entry, index) => (
-                          <Cell key={`cell-stock-${index}`} fill={entry.isPrediction ? '#fcd34d' : '#f59e0b'} fillOpacity={entry.isPrediction ? 0.6 : 1} />
-                        ))}
-                      </Bar>
-                    )}
-                    
-                    {(selectedCategory === "all" || selectedCategory === "totalSalary") && (
-                      <Bar dataKey="totalSalary" fill="#ef4444" name="Lương nhân viên" barSize={viewType === "day" ? 12 : 32}>
-                        {selectedChartData.map((entry, index) => (
-                          <Cell key={`cell-salary-${index}`} fill={entry.isPrediction ? '#fca5a5' : '#ef4444'} fillOpacity={entry.isPrediction ? 0.6 : 1} />
-                        ))}
-                      </Bar>
-                    )}
-                    
-                    {(selectedCategory === "all" || selectedCategory === "profit") && (
-                      <Line 
-                        type="monotone" 
-                        dataKey="profit" 
-                        stroke="#10b981" 
-                        strokeWidth={3} 
-                        name="Lợi nhuận" 
-                        dot={viewType === "day" ? false : { r: 4, strokeWidth: 2 }} 
-                        activeDot={{ r: 6 }} 
-                      />
-                    )}
-                  </ComposedChart>
-              </ResponsiveContainer>
-            </div>
           </div>
-        </div>
-      </section>
-    </ProtectedRoute>
-  );
+          </section>
+        </ProtectedRoute>
+        );
 };
 
-export default Page;
+        export default Page;

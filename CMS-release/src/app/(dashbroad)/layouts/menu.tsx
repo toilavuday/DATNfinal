@@ -9,6 +9,7 @@ import {
   TeamOutlined,
   CommentOutlined,
   RobotOutlined,
+  BellOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -45,6 +46,11 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
       key: "/home",
       label: <Link href="/home">Quản lý kinh doanh</Link>,
       icon: <AppstoreOutlined style={iconStyle} />,
+    },
+    {
+      key: "/notifications",
+      label: <Link href="/notifications">Quản lý thông báo</Link>,
+      icon: <BellOutlined style={iconStyle} />,
     },
     {
       key: "/staff",

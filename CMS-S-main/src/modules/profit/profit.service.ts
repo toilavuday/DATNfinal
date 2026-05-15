@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { StockService } from '../stock/stock.service';
+import { SalaryService } from '../salary/salary.service';
 import { CreateProfitDto } from './profit.dto';
 
 @Injectable()
@@ -8,7 +9,8 @@ export class ProfitService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly stockService: StockService,
-  ) {}
+    private readonly salaryService: SalaryService,
+  ) { }
 
   async createProfit(data: CreateProfitDto) {
     return this.prisma.profit.create({
@@ -53,30 +55,10 @@ export class ProfitService {
 
     const revenue = orders.reduce((sum, order) => sum + (order.amount || 0), 0);
 
-    const schedules = await this.prisma.schedule.findMany({
-      where: {
-        date: {
-          gte: startOfMonth,
-          lt: endOfMonth,
-        },
-        ...(employeeId && employeeId !== 'all' ? { userId: employeeId } : {}),
-      },
-      include: {
-        user: {
-          select: {
-            hourlyRate: true,
-          },
-        },
-      },
-    });
-
-    const totalSalary = schedules.reduce((sum, schedule) => {
-      let rate = schedule.user?.hourlyRate || 0;
-      if (schedule.shifts && schedule.shifts.includes("Ca 3")) {
-        rate += 5000;
-      }
-      return sum + schedule.hoursWorked * rate;
-    }, 0);
+    const totalSalary = await this.salaryService.getTotalSalaryForPeriod(
+      parseInt(month),
+      year,
+    );
 
     const batches = await this.prisma.stockEntryBatch.findMany({
       where: {
@@ -100,7 +82,7 @@ export class ProfitService {
           totalImportCost += Number(entry.price || 0) * Number(entry.quantity || 0);
         }
 
-        if (entry.type === 'EXPORT') {
+        if (entry.type === 'EXPORT' || entry.type === 'CONSUME') {
           const avgPrice = await this.stockService.getEffectiveAveragePrice(entry.category, entry.productDetail, entry.unit);
           const entryPrice = Number(entry.price || avgPrice);
           totalExportCost += entryPrice * Number(entry.quantity || 0);
